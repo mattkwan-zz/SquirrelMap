@@ -3,6 +3,7 @@ package com.google.corp.syd.mattkwan.squirrelmap;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.SeekBar;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 
 public class MapsActivity extends FragmentActivity {
 
+    private SeekBar mSlider;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private final String ServerURL = "http://radiant-forest-9849.herokuapp.com/easteregg/pop?population=4000000";
 
@@ -22,6 +24,23 @@ public class MapsActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+        mSlider = (SeekBar) findViewById(R.id.slider);
+        mSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     @Override
@@ -65,6 +84,10 @@ public class MapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
+        loadAndShowMarkers();
+    }
+
+    private void loadAndShowMarkers() {
         new Thread() {
             @Override
             public void run() {
