@@ -27,13 +27,14 @@ public class MapsActivity extends FragmentActivity {
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
         mSlider = (SeekBar) findViewById(R.id.slider);
-        /*
+
         mSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
-            int seeker_value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if (b) { seeker_value = i; }
+                if (b) {
+                    loadAndShowMarkers(i);
+                }
             }
 
             @Override
@@ -43,12 +44,8 @@ public class MapsActivity extends FragmentActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                isLoading = true;
-                loadAndShowMarkers(seeker_value);
-                isLoading = false;
             }
         });
-        */
     }
 
     @Override
@@ -92,7 +89,7 @@ public class MapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        //loadAndShowMarkers(4000000);
+        loadAndShowMarkers(4000000);
     }
 
     private void loadAndShowMarkers(final int population) {
@@ -103,7 +100,9 @@ public class MapsActivity extends FragmentActivity {
         new Thread() {
             @Override
             public void run() {
+                isLoading = true;
                 final JSONObject markers = JsonLoader.load(ServerURL+population);
+                isLoading = false;
 
                 if (markers != null) {
                     runOnUiThread(new Runnable() {
@@ -120,6 +119,7 @@ public class MapsActivity extends FragmentActivity {
     private void showMarkers(JSONObject markers) {
         JSONArray ja = markers.optJSONArray("features");
 
+        mMap.clear();
         for (int i = 0; i < ja.length(); i++) {
             JSONObject obj = ja.optJSONObject(i);
             JSONArray coord = obj.optJSONObject("geometry").optJSONArray("coordinates");
