@@ -89,12 +89,11 @@ public class MapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        loadAndShowMarkers(4000000);
+        loadAndShowMarkers(0);
     }
 
     private void loadAndShowMarkers(final int population) {
         if(isLoading) {
-            Toast.makeText(getApplicationContext(), "isLoading", Toast.LENGTH_SHORT);
             return;
         }
         new Thread() {
