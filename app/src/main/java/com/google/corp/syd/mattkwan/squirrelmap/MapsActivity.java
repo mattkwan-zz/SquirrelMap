@@ -4,6 +4,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -17,7 +18,8 @@ public class MapsActivity extends FragmentActivity {
 
     private SeekBar mSlider;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private final String ServerURL = "http://radiant-forest-9849.herokuapp.com/easteregg/pop?population=4000000";
+    private final String ServerURL = "http://radiant-forest-9849.herokuapp.com/easteregg/pop?population=";
+    private boolean isLoading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,10 +27,13 @@ public class MapsActivity extends FragmentActivity {
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
         mSlider = (SeekBar) findViewById(R.id.slider);
+        /*
         mSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            int seeker_value;
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-
+                if (b) { seeker_value = i; }
             }
 
             @Override
@@ -38,9 +43,12 @@ public class MapsActivity extends FragmentActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                isLoading = true;
+                loadAndShowMarkers(seeker_value);
+                isLoading = false;
             }
         });
+        */
     }
 
     @Override
@@ -84,14 +92,18 @@ public class MapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        loadAndShowMarkers();
+        //loadAndShowMarkers(4000000);
     }
 
-    private void loadAndShowMarkers() {
+    private void loadAndShowMarkers(final int population) {
+        if(isLoading) {
+            Toast.makeText(getApplicationContext(), "isLoading", Toast.LENGTH_SHORT);
+            return;
+        }
         new Thread() {
             @Override
             public void run() {
-                final JSONObject markers = JsonLoader.load(ServerURL);
+                final JSONObject markers = JsonLoader.load(ServerURL+population);
 
                 if (markers != null) {
                     runOnUiThread(new Runnable() {
